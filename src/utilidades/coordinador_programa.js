@@ -249,7 +249,7 @@ function enviarFormularioEstudiante() {
       doc.setFont("helvetica", "bold");
       doc.text(`${key.padEnd(25, " ")}:`, 10, y); // Etiqueta alineada
       doc.setFont("helvetica", "normal");
-      doc.text(formData[key], 70, y); // Valor con más espacio
+      doc.text(formData[key], 85, y); // Valor con más espacio
       y += 12; // Espacio extra entre filas
     });
 
