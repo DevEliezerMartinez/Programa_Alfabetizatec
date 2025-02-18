@@ -80,7 +80,7 @@
                 method: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    if (response && response.sucess) { // Verifica si la respuesta es exitosa
+                    if (response) { // Verifica si la respuesta es exitosa
 
                         const metasData = response.resumenPorRegion;
                         const educadoresData = response.educadoresPorRegion;
