@@ -66,11 +66,11 @@
                     nombre: 'Bajio'
                 },
                 {
-                    id: 5,
+                    id: 4,
                     nombre: 'Centro'
                 },
                 {
-                    id: 7,
+                    id: 5,
                     nombre: 'Sureste'
                 }
             ];
