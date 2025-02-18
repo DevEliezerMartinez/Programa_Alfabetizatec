@@ -159,7 +159,7 @@ var run = function () {
       console.log("Región ajustada para la URL:", region); // Para depuración
       var url = `./vista_region.php?region=${encodeURIComponent(region)}`;
       console.log("URL a la que se intenta redirigir:", url); // Para depuración
-      // window.location.href = url;
+       window.location.href = url;
     });
   }
   // Realizar la solicitud Fetch al archivo PHP
