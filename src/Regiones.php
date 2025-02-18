@@ -81,7 +81,7 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response) { // Verifica si la respuesta es exitosa
-
+console.log(response)
                         const metasData = response.resumenPorRegion;
                         const educadoresData = response.educadoresPorRegion;
 
