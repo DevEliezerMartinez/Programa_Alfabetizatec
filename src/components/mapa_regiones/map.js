@@ -100,6 +100,15 @@ var run = function () {
     "Suroeste",
     "Sureste",
   ];
+  // Definir las equivalencias una sola vez
+  var equivalencias = {
+    Suroeste: "Sureste",
+    Oriente: "Noreste",
+    Centrosur: "Centro",
+    Centronorte: "Bajio",
+    Noroeste: "Occidente",
+    Occidente: "Bajio",
+  };
 
   for (var i = 0, t = group.length; i < t; i++) {
     var elemento = group[i];
@@ -115,18 +124,13 @@ var run = function () {
         // Resaltar la tarjeta correspondiente a la región
         const regionName = this.data("region"); // Nombre de la región
         const cards = document.querySelectorAll(".card"); // Todas las cards
+
+        // Aplicar equivalencias para el hover
+        const regionHover = equivalencias[regionName] || regionName;
+
         cards.forEach((card) => {
           const cardRegion = card.querySelector("h3").textContent; // Nombre de la región en la card
-          console.log("datos", cardRegion)
-          if (
-            cardRegion === regionName ||
-            (regionName === "Suroeste" && cardRegion === "Sureste") ||
-            (regionName === "Oriente" && cardRegion === "Noreste") ||
-            (regionName === "Centrosur" && cardRegion === "Centro") ||
-            (regionName === "Centronorte" && cardRegion === "Bajio") ||
-            (regionName === "Noroeste" && cardRegion === "Occidente") // Resalta "Occidente" si la región es "Noroeste"
-          ) {
-            // Resalta "Sureste" si la región es "Suroeste"
+          if (cardRegion === regionHover) {
             card.classList.add("card-highlight");
           }
         });
@@ -137,19 +141,27 @@ var run = function () {
         // Quitar el resaltado de todas las tarjetas
         const cards = document.querySelectorAll(".card");
         cards.forEach((card) => {
-          card.classList.remove("card-highlight"); // Remover clase de resaltado
+          card.classList.remove("card-highlight");
         });
       }
-    ); // Fin del método hover
+    );
 
     // On Click
     elemento.click(function () {
-      var region = this.data("region"); // Obtener el nombre de la región
-      var url = `./vista_region.php?region=${encodeURIComponent(region)}`; // Codificar el nombre para la URL
-      window.location.href = url; // Redirigir a la URL
-    }); // Fin del método click
-  }
+      var region = this.data("region"); // Obtener el nombre original de la región
+      console.log("Región original clickeada:", region); // Para depuración
 
+      // Aplicar equivalencias para el click
+      if (equivalencias[region]) {
+        region = equivalencias[region];
+      }
+
+      console.log("Región ajustada para la URL:", region); // Para depuración
+      var url = `./vista_region.php?region=${encodeURIComponent(region)}`;
+      console.log("URL a la que se intenta redirigir:", url); // Para depuración
+      // window.location.href = url;
+    });
+  }
   // Realizar la solicitud Fetch al archivo PHP
   fetch("./api/coordinador_gral/obtenerRegiones.php") // Ruta al archivo PHP
     .then((response) => {
