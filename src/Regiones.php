@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="../assets/css/regiones.css">
     <link rel="stylesheet" href="../assets/css/layout/header.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </head>
 
 <body>
@@ -34,6 +36,10 @@
         <div class="container_cards">
             <!-- Las cards se generarán dinámicamente aquí -->
         </div>
+
+        <button>
+            Descargar reportes
+        </button>
 
         <h2>Resumen de las regiones</h2>
 
@@ -75,13 +81,85 @@
                 }
             ];
 
+
+            $("button:contains('Descargar reportes')").on("click", function() {
+                $.ajax({
+                    url: "./api/coordinador_gral/obtenerDetallesRegiones.php",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success && response.data) {
+                            generarPDF(response.data);
+                        } else {
+                            console.error("Error: Datos no válidos");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en la petición:", error);
+                    }
+                });
+            });
+
+
+            function generarPDF(data) {
+                console.log("empeiz")
+                // Crear una instancia de jsPDF
+                const doc = new jspdf.jsPDF();
+
+                // Configurar el título del PDF
+                doc.setFontSize(18);
+                doc.text("Reporte de Participantes por Tecnológico", 10, 20);
+
+                // Configurar el tamaño de la fuente para el contenido
+                doc.setFontSize(12);
+
+                // Posición inicial para el contenido
+                let y = 30;
+
+                // Recorrer los datos de participantes por tecnológico
+                data.participantes_por_tecnologico.forEach((item, index) => {
+                    const text = `${item.tecnologico} - ${item.tipo_participante}: ${item.total}`;
+                    doc.text(text, 10, y);
+                    y += 10; // Aumentar la posición en Y para el siguiente elemento
+
+                    // Si el contenido excede la página, agregar una nueva página
+                    if (y > 280) {
+                        doc.addPage();
+                        y = 20; // Reiniciar la posición en Y
+                    }
+                });
+
+                // Agregar una nueva sección para estudiantes por nivel
+                doc.addPage();
+                y = 20;
+                doc.setFontSize(18);
+                doc.text("Estudiantes por Nivel", 10, y);
+                y += 10;
+
+                doc.setFontSize(12);
+                data.estudiantes_por_tecnologico_nivel.forEach((item, index) => {
+                    const text = `${item.tecnologico} - ${item.nivel}: ${item.total_estudiantes}`;
+                    doc.text(text, 10, y);
+                    y += 10;
+
+                    // Si el contenido excede la página, agregar una nueva página
+                    if (y > 280) {
+                        doc.addPage();
+                        y = 20; // Reiniciar la posición en Y
+                    }
+                });
+
+                // Guardar el PDF
+                doc.save("reporte_participantes.pdf");
+            }
+
             $.ajax({
                 url: './api/graficas/metas.php', // URL del endpoint de las metas
                 method: 'GET',
                 dataType: 'json',
                 success: function(response) {
                     if (response) { // Verifica si la respuesta es exitosa
-console.log(response)
+                        // console.log(response)
                         const metasData = response.resumenPorRegion;
                         const educadoresData = response.educadoresPorRegion;
 
@@ -101,8 +179,8 @@ console.log(response)
                             educadores.push(educadoresRegion ? parseInt(educadoresRegion.total_educadores) || 0 : 0);
                         });
 
-                        console.log('Metas:', metas);
-                        console.log('Educadores:', educadores);
+                        //console.log('Metas:', metas);
+                        //console.log('Educadores:', educadores);
 
                         const ctxMetas = document.getElementById('graficoMetas').getContext('2d');
                         new Chart(ctxMetas, {
