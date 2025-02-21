@@ -221,6 +221,7 @@
                     region_nombre: regionNombre
                 }, // Datos a enviar
                 success: function(response) {
+                    console.log(response)
                     try {
                         // Verificar si la respuesta es exitosa
                         if (response.success) {

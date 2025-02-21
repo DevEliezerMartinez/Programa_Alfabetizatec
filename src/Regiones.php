@@ -10,10 +10,14 @@
     <link rel="stylesheet" href="../assets/css/layout/header.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<<<<<<< Updated upstream
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
    
 
 
+=======
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.24/jspdf.plugin.autotable.min.js"></script>
+>>>>>>> Stashed changes
 </head>
 
 <body>
@@ -136,11 +140,18 @@
 
 
             function generarPDF(data) {
+<<<<<<< Updated upstream
     console.log("empezando PDF");
+=======
+                console.log("empezó");
+                // Crear una instancia de jsPDF
+                const doc = new jspdf.jsPDF();
+>>>>>>> Stashed changes
 
     // Crear una instancia de jsPDF
     const doc = new jspdf.jsPDF();
 
+<<<<<<< Updated upstream
     // Configurar el título del PDF
     doc.setFontSize(18);
     doc.text("Reporte de Participantes por Tecnológico", 10, 20);
@@ -199,6 +210,131 @@
 }
 
 
+=======
+                // Procesar los datos para la tabla
+                const groupedData = {};
+
+                // Procesar participantes_por_tecnologico (Educadores)
+                data.participantes_por_tecnologico.forEach(item => {
+                    if (!groupedData[item.tecnologico]) {
+                        groupedData[item.tecnologico] = {
+                            Estudiantes: '',
+                            Docentes: '',
+                            Administrativos: '',
+                            Analfabeta: '',
+                            Primaria: '',
+                            Secundaria: ''
+                        };
+                    }
+
+                    switch (item.tipo_participante) {
+                        case 'Estudiante Universitario':
+                            groupedData[item.tecnologico].Estudiantes = item.total;
+                            break;
+                        case 'Docente':
+                            groupedData[item.tecnologico].Docentes = item.total;
+                            break;
+                        case 'Administrativo':
+                            groupedData[item.tecnologico].Administrativos = item.total;
+                            break;
+                    }
+                });
+
+                // Procesar estudiantes_por_tecnologico_nivel (Educandos)
+                data.estudiantes_por_tecnologico_nivel.forEach(item => {
+                    if (!groupedData[item.tecnologico]) {
+                        groupedData[item.tecnologico] = {
+                            Estudiantes: '',
+                            Docentes: '',
+                            Administrativos: '',
+                            Analfabeta: '',
+                            Primaria: '',
+                            Secundaria: ''
+                        };
+                    }
+
+                    switch (item.nivel) {
+                        case 'Analfabeta':
+                            groupedData[item.tecnologico].Analfabeta = item.total_estudiantes;
+                            break;
+                        case 'Primaria':
+                            groupedData[item.tecnologico].Primaria = item.total_estudiantes;
+                            break;
+                        case 'Secundaria':
+                            groupedData[item.tecnologico].Secundaria = item.total_estudiantes;
+                            break;
+                    }
+                });
+
+                // Preparar los datos para la tabla
+                const tableData = Object.keys(groupedData).map(tecnologico => [
+                    tecnologico,
+                    groupedData[tecnologico].Estudiantes,
+                    groupedData[tecnologico].Docentes,
+                    groupedData[tecnologico].Administrativos,
+                    groupedData[tecnologico].Analfabeta,
+                    groupedData[tecnologico].Primaria,
+                    groupedData[tecnologico].Secundaria
+                ]);
+
+                // Configurar los encabezados de la tabla
+                const headers = [{
+                        title: "Tecnológico",
+                        colSpan: 1,
+                        rowSpan: 2
+                    },
+                    {
+                        title: "Educadores",
+                        colSpan: 3,
+                        rowSpan: 1
+                    },
+                    {
+                        title: "Educandos",
+                        colSpan: 3,
+                        rowSpan: 1
+                    }
+                ];
+
+                const subHeaders = [
+                    "Estudiantes", "Docentes", "Administrativos",
+                    "Analfabeta", "Primaria", "Secundaria"
+                ];
+
+                // Generar la tabla
+                doc.autoTable({
+                    head: [headers, subHeaders],
+                    body: tableData,
+                    startY: 30,
+                    theme: 'grid',
+                    styles: {
+                        fontSize: 10,
+                        cellPadding: 3,
+                        lineColor: [0, 0, 0], // Color de los bordes
+                        lineWidth: 0.1 // Grosor de los bordes
+                    },
+                    headStyles: {
+                        fillColor: [22, 160, 133],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold',
+                        halign: 'center'
+                    },
+                    bodyStyles: {
+                        halign: 'center' // Centrar el texto en las celdas del cuerpo
+                    },
+                    didParseCell: function(data) {
+                        // Ajustar el estilo de las celdas de encabezado principal
+                        if (data.section === 'head' && data.row.index === 0) {
+                            data.cell.styles.fillColor = [22, 160, 133]; // Color de fondo
+                            data.cell.styles.fontStyle = 'bold'; // Texto en negrita
+                            data.cell.styles.halign = 'center'; // Centrar texto
+                        }
+                    }
+                });
+
+                // Guardar el PDF
+                doc.save("reporte_participantes.pdf");
+            }
+>>>>>>> Stashed changes
             $.ajax({
                 url: './api/graficas/metas.php', // URL del endpoint de las metas
                 method: 'GET',

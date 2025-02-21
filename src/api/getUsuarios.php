@@ -57,10 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 FROM coordinadores_regionales cr
                 INNER JOIN usuarios u ON cr.id_usuario = u.id
                 INNER JOIN regiones r ON cr.id_region = r.id
-                LIMIT ?, ?";
+                ";
 
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ii', $start, $length);  // Pagina los resultados
+        //$stmt->bind_param('ii', $start, $length);  // Pagina los resultados
         $stmt->execute();
         $result = $stmt->get_result();
 
