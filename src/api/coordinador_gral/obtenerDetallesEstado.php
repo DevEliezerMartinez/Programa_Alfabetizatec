@@ -41,7 +41,7 @@ try {
 
         // Consulta para obtener los detalles de los tecnológicos por estado
         $queryTecnologicosPorEstado = "
-            SELECT t.id AS tecnologico_id, t.nombre AS tecnologico_nombre, director, tipo_de_institucion
+            SELECT t.id AS tecnologico_id, t.nombre AS tecnologico_nombre, director, modalidad AS tipo_de_institucion
             FROM tecnologicos t
             WHERE t.estado_id = ?
         ";

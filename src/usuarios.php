@@ -26,6 +26,13 @@
 </head>
 
 <body>
+
+    <?php
+    // <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
+    session_start();
+    include('./api/auth/validate.php');
+    ?>
+
     <?php include('./layout/header.php') ?>
     </header>
     <main>
@@ -42,7 +49,7 @@
             </button>
 
             <!-- DataTable container -->
-            <table id="coordinadoresTable" class="display" style="width:100%; margin:auto; width:70%">
+            <table id="coordinadoresTable" class="display">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -248,8 +255,7 @@
 
             // Inicializar DataTable
             const table = $('#coordinadoresTable').DataTable({
-                "processing": true,
-                "serverSide": true,
+
                 "ajax": {
                     "url": apiUrl,
                     "dataSrc": "data", // La respuesta del API tiene los datos en "data"

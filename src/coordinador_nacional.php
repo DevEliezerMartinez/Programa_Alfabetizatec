@@ -1,8 +1,3 @@
-<?php
-session_start();
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,6 +8,8 @@ session_start();
     <link rel="stylesheet" href="../assets/css/root.css">
     <link rel="stylesheet" href="../assets/css/layout/header.css">
     <link rel="stylesheet" href="../assets/css/coordinador_nacional.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
+
 
 
 
@@ -20,7 +17,11 @@ session_start();
 
 
 <body>
-
+    <?php
+    // <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
+    session_start();
+    include('./api/auth/validate.php');
+    ?>
     <header>
         <?php include('./layout/header.php') ?>
     </header>

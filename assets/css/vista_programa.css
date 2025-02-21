@@ -1,32 +1,15 @@
 main {
   background-color: var(--gris_contraste);
+  min-height: 85vh;
 }
-p {
-  padding: 1.3rem;
-}
+
 
 #detallesPrograma {
   max-width: 95%;
   flex-direction: column;
   margin-top: 4rem;
 }
-/* 
 
-#graficoBarras{
-    width: 80%;
-    height: 600;
-}
-
-#avance{
-    width: 80%;
-    height: 600;
-}
-
-
-.avance_metas h4{
-    font-size: 1.4rem;
-} */
-/* Estilo de la tabla */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -71,4 +54,224 @@ table tbody tr:hover {
 .dataTables_paginate .paginate_button.current {
   background-color: #0056b3; /* Fondo del botón de la página actual */
   color: white;
+}
+
+
+#detallesPrograma h4, h1{
+  text-align: center;
+}
+
+  h1{
+margin: 2rem 0rem;
+}
+
+#detallesPrograma div{
+margin: 1rem 0rem;}
+
+#educador_nombre {
+  text-align: center;
+}
+
+/* Estilos base para el botón de eliminar */
+.btn-eliminar {
+  background-color: #dc3545; /* Rojo de Bootstrap para acciones peligrosas */
+  color: white; /* Texto en blanco */
+  border: none; /* Sin borde */
+  padding: 8px 16px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+  font-size: 14px; /* Tamaño de fuente */
+  font-weight: 500; /* Grosor de la fuente */
+  cursor: pointer; /* Cambiar el cursor a una mano */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+  display: inline-flex; /* Para alinear icono y texto */
+  align-items: center; /* Centrar verticalmente */
+  gap: 8px; /* Espacio entre icono y texto */
+}
+
+/* Efecto al pasar el mouse */
+.btn-eliminar:hover {
+  background-color: #c82333; /* Rojo más oscuro al pasar el mouse */
+  transform: translateY(-1px); /* Efecto de levantar */
+}
+
+/* Efecto al hacer clic */
+.btn-eliminar:active {
+  background-color: #bd2130; /* Rojo aún más oscuro al hacer clic */
+  transform: translateY(0); /* Volver a la posición original */
+}
+
+/* Estilo para el ícono (si usas un ícono) */
+.btn-eliminar i {
+  font-size: 16px; /* Tamaño del ícono */
+}
+
+/* Estilo para cuando el botón está deshabilitado */
+.btn-eliminar:disabled {
+  background-color: #6c757d; /* Gris de Bootstrap para deshabilitado */
+  cursor: not-allowed; /* Cursor de no permitido */
+  opacity: 0.7; /* Reducir opacidad */
+}
+
+
+/* Estilos base para el botón de editar */
+.btn-editar {
+  background-color: #007bff; /* Azul de Bootstrap para acciones primarias */
+  color: white; /* Texto en blanco */
+  border: none; /* Sin borde */
+  padding: 8px 16px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+  font-size: 14px; /* Tamaño de fuente */
+  font-weight: 500; /* Grosor de la fuente */
+  cursor: pointer; /* Cambiar el cursor a una mano */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+  display: inline-flex; /* Para alinear icono y texto */
+  align-items: center; /* Centrar verticalmente */
+  gap: 8px; /* Espacio entre icono y texto */
+}
+
+/* Efecto al pasar el mouse */
+.btn-editar:hover {
+  background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+  transform: translateY(-1px); /* Efecto de levantar */
+}
+
+/* Efecto al hacer clic */
+.btn-editar:active {
+  background-color: #004080; /* Azul aún más oscuro al hacer clic */
+  transform: translateY(0); /* Volver a la posición original */
+}
+
+/* Estilo para el ícono (si usas un ícono) */
+.btn-editar i {
+  font-size: 16px; /* Tamaño del ícono */
+}
+
+/* Estilo para cuando el botón está deshabilitado */
+.btn-editar:disabled {
+  background-color: #6c757d; /* Gris de Bootstrap para deshabilitado */
+  cursor: not-allowed; /* Cursor de no permitido */
+  opacity: 0.7; /* Reducir opacidad */
+}
+
+
+ 
+
+/* Estilos para la tabla responsive */
+.table-container {
+  overflow-x: auto;
+  margin: 10px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 5px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+
+
+thead th {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+tr:nth-child(even) td {
+  background-color: #f1f1f1;
+}
+
+/* Estilos para los botones */
+.btn-eliminar, .btn-editar {
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  margin: .4rem;
+}
+
+.btn-eliminar {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-editar {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  table {
+      border-spacing: 2px;
+  }
+
+  thead {
+      display: none;
+  }
+
+  tbody, tr, td {
+      display: block;
+      width: 100%;
+  }
+
+  tr {
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+  }
+
+  td {
+      text-align: right;
+      padding: 5px 10px;
+      position: relative;
+  }
+
+  td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 10px;
+      font-weight: bold;
+      text-align: left;
+  }
+
+  .btn-eliminar, .btn-editar {
+      width: 100%;
+      margin-top: 5px;
+  }
+}
+
+
+
+.swal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group label, span{
+  text-align: left;
+}
+
+.form-group span{
+  font-size: .7rem;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+.form-control {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
 }

@@ -52,7 +52,7 @@
 
 .logo_dinamico p:nth-child(2) {
   font-weight: 600;
-  color: var(--vino_sep);
+  color: var(--blanco_universal);
   line-height: 1.5; /* Mejora la separación entre líneas */
 }
 
@@ -68,6 +68,14 @@
   }
   .principal_header img:nth-of-type(1) {
     width: 70%;
+  }
+
+  .logo_dinamico p:nth-child(2) {
+font-size: .5rem;  
+  }
+  
+  .logo_dinamico p:nth-child(1) {
+   font-size: 1rem;
   }
 }
 
@@ -157,4 +165,5 @@ ul.breadcrumb li a:hover {
 
 .tooltip{
   font-size: .7rem;
+  
 }

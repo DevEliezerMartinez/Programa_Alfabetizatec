@@ -13,20 +13,25 @@ try {
     if ($id_instituto > 0) {
         // Consulta para obtener los programas asociados al Instituto y sus niveles
         $query = "
-            SELECT 
-                p.id,
-                p.nombre AS programa_nombre, 
-                p.descripcion AS programa_descripcion, 
-                n.nombre AS nivel_nombre, 
-                p.meta, 
-                p.inicio_periodo, 
-                p.fin_periodo
-            FROM 
-                programas p
-            INNER JOIN 
-                niveles n ON p.id_nivel = n.id
-            WHERE 
-                p.id_tecnologico = ?
+            SELECT
+    p.id,
+    p.nombre AS programa_nombre,
+    p.descripcion AS programa_descripcion,
+    n.nombre AS nivel_nombre,
+    p.meta,
+    p.inicio_periodo,
+    p.fin_periodo,
+    CONCAT(u.nombre, ' ', u.apellido) AS coordinador_nombre
+FROM
+    programas p
+INNER JOIN
+    niveles n ON p.id_nivel = n.id
+INNER JOIN
+    educadores cp ON p.id_coordinador = cp.id
+INNER JOIN
+    usuarios u ON cp.id_usuario = u.id
+WHERE
+    p.id_tecnologico = ?;
         ";
         $stmt = $conn->prepare($query);
 

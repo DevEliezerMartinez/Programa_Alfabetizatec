@@ -1,15 +1,13 @@
+/* Hero Section */
 .hero {
-  position: relative; /* Necesario para que el pseudo-elemento se posicione correctamente */
+  position: relative; /* Necesario para el pseudo-elemento */
   width: 100%;
   height: 88vh;
-  background-image: url("./hero.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  overflow: hidden; /* Asegura que no haya desbordamiento del pseudo-elemento */
-  display: flex; /* Usamos Flexbox para centrar contenido verticalmente */
-  align-items: center; /* Centrado vertical */
-  justify-content: flex-start; /* Texto alineado a la izquierda */
+  background: url("./hero.jpg") no-repeat center/cover; /* Sintaxis optimizada */
+  overflow: hidden; /* Para evitar desbordamientos */
+  display: flex; /* Flexbox para centrar contenido */
+  align-items: center;
+  justify-content: flex-start;
   padding: 1rem;
 }
 
@@ -25,30 +23,21 @@
 }
 
 .hero .content {
-  position: relative; /* Para colocarlo encima del overlay */
+  position: relative;
   z-index: 2; /* Encima del overlay */
-  color: var(--blanco_universal); /* Texto blanco para contraste */
+  color: var(--blanco_universal);
   text-align: left;
   padding: 1.4rem 1rem;
   max-width: 50%;
 }
 
-.hero .content h1 {
-  font-size: 2.5rem; /* Tamaño del título */
-  margin-bottom: 1rem;
-}
-
+.hero .content h1,
 .hero .content p {
-  font-size: 1rem; /* Tamaño del párrafo */
   margin-bottom: 1rem;
-}
-
-.cta {
-  margin: 1rem 0;
 }
 
 .cta button {
-  padding: 0.8rem 1.5rem; /* Botón más pequeño en pantallas pequeñas */
+  padding: 0.8rem 1.5rem;
   font-weight: 400;
   background-color: var(--azul_TecNM);
   color: var(--blanco_universal);
@@ -57,169 +46,230 @@
   margin: 1rem 0;
   border-radius: 1rem;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
 }
 
-/* Animación al pasar el cursor */
 .cta button:hover {
-  background-color: #073680f6; /* Cambia ligeramente el color de fondo */
-  transform: scale(1.05); /* Aumenta el tamaño ligeramente */
-  box-shadow: 0px 8px 15px rgba(7, 54, 128, 0.966); /* Agrega una sombra para mayor énfasis */
+  background-color: #073680f6;
+  transform: scale(1.05);
+  box-shadow: 0px 8px 15px rgba(7, 54, 128, 0.966);
 }
 
-/* Efecto de clic */
 .cta button:active {
-  transform: scale(0.95); /* Reduce el tamaño ligeramente al hacer clic */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Reduce la sombra */
+  transform: scale(0.95);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Media Queries */
 @media (max-width: 768px) {
   .hero .content {
-    max-width: 100%; /* El contenido ocupa el 100% del ancho en pantallas pequeñas */
-    text-align: center; /* Texto centrado */
-  }
-
-   .hero .content h1 {
-    font-size: 2rem; /* Tamaño ajustado para pantallas más pequeñas */
-  }
-
-  section{
-    max-width: 80%;
-    padding: 1.rem;
-  }
-
-  .hero .content p {
-    font-size: 1rem; /* Párrafo más pequeño */
-  }
-
-  .cta button {
-    padding: 0.6rem 1.2rem; /* Botones más compactos */
-  }
-}
-
-@media (max-width: 480px) {
-  .hero {
-    height: 60vh; /* Altura menor en pantallas muy pequeñas */
+    max-width: 100%; /* 100% ancho en pantallas pequeñas */
+    text-align: center;
+    padding-top: 12rem;
   }
 
   .hero .content h1 {
-    font-size: 1.5rem; /* Tamaño reducido para dispositivos muy pequeños */
+    font-size: 2rem;
   }
-
   .hero .content p {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .cta button {
-    padding: 0.5rem 1rem; /* Botones más compactos */
+    padding: 0.6rem 1.2rem;
   }
-}
 
-section {
-  max-width: 100%;
-  margin: 2rem 0rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-section h3 {
-  text-align: center;
-}
-
-.row {
-  display: flex; /* Diseño horizontal por defecto */
-  flex-direction: row; /* Alineación horizontal en escritorio */
-  align-items: center;
-  justify-content: center;
-  gap: 1rem; /* Espacio entre los elementos */
-  padding: 1rem;
-}
-
-.izq {
-  flex: 1; /* El contenido izquierdo ocupa espacio proporcional */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.izq img {
-  max-width: 100%; /* Imagen responsive */
-  height: auto;
-}
-
-.row p {
-  flex: 2; /* El texto ocupa más espacio */
-  text-align: justify;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-@media (max-width: 768px) {
   .row {
     flex-direction: column; /* Diseño vertical en móviles */
     text-align: center;
   }
 
- 
-
-  .izq img {
-    max-width: 80%; /* Reducir el tamaño de la imagen en móviles */
-  }
-
-  .row p {
-    text-align: justify;
-    font-size: 0.95rem; /* Tamaño más pequeño para móviles */
+  .row img {
+    max-width: 80%;
   }
 }
 
 @media (max-width: 480px) {
-  .row {
-    padding: 1rem 0; /* Reducir padding en móviles pequeños */
+  .hero {
+    height: 90vh;
+  } /* Ajuste para pantallas muy pequeñas */
+
+  .hero .content h1 {
+    font-size: 1.5rem;
+  }
+  .hero .content p {
+    font-size: 0.9rem;
   }
 
-  .card_landing{
-   
-    max-width: 80%;
-
-    
+  .cta button {
+    padding: 0.5rem 1rem;
+  }
+  
+  .cta{
+    display: flex;
+    gap: .4rem;
+    flex-direction: column;
+  }
 }
 
-  .izq img {
-    max-width: 100%; /* Imagen ocupa el ancho completo */
+/* Sección principal */
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+section {
+  max-width: 80%;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+section h3 {
+  text-align: center;
+}
+
+/* Row & Izquierda */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.izq {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row p {
+  flex: 2;
+  text-align: justify;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.izq img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Nota */
+.nota {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+}
+
+.nota h3 {
+  color: #d35400;
+  margin-top: 1.5rem;
+}
+.nota ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.nota ul li {
+  background: #fbe9e7;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+}
+
+/* Bienvenida */
+.bienvenida {
+  text-align: center;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bienvenida h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.bienvenida video {
+  max-width: 60%;
+  height: auto;
+  padding-top: 1rem;
+}
+
+/* Media Queries de Pantalla Pequeña */
+@media (max-width: 600px) {
+  .bienvenida h2 {
+    font-size: 1.5rem;
   }
 
-  .row p {
-    font-size: 0.9re;
+  .bienvenida video {
+    max-width: 85%;
   }
 }
 
 .home_cards {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center ;
-  padding: 1rem;
+  justify-content: center;
+  padding: 2rem;
   gap: 2rem;
 }
 
+.card_landing {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-width: 280px;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
 
-.card_landing{
-    padding: 1rem;
-    display: flex;
+.card_landing:hover {
+  transform: scale(1.05);
+}
+
+.card_landing img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.card_landing h4 {
+  font-size: 18px;
+  margin: 1rem;
+  color: var(--azul_TecNM);
+  border-bottom: 3px solid var(--azul_TecNM);
+  padding-bottom: 0.5rem;
+}
+
+.card_landing span {
+  padding: 0 1rem;
+  font-size: 14px;
+  display: block;
+  color: #666;
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .home_cards {
     flex-direction: column;
-    justify-content:    center ;
-    max-width: 50%;
-    border-bottom: 3px solid var(--azul_TecNM);
-    max-width: 300px;
-    
+    align-items: center;
+  }
+
+  .card_landing {
+    max-width: 90%;
+  }
+
 }
 
-
-.card_landing h4{
-    margin: 1rem 0rem;
-    border-bottom: 3px solid var(--azul_TecNM);
-    padding: 1rem;
-}
-
-.card_landing span{
-    padding: 1rem;
-}

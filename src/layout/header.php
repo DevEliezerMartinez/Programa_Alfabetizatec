@@ -19,9 +19,9 @@ $user_id = isset($_SESSION['rol_id']) ? $_SESSION['rol_id'] : null; // Obtener e
     <ul class="dropdown_menu hidden">
 
         <?php if ($user_id > 2): ?>
-            <li class="menu_item">
+            <li class="menu_item back">
                 <img src="../assets/img/svg/back.svg" alt="volver icono">
-                <a href="#" class="back">Volver</a>
+                <a href="#" class="">Volver</a>
             </li>
         <?php endif; ?>
 
@@ -40,9 +40,9 @@ $user_id = isset($_SESSION['rol_id']) ? $_SESSION['rol_id'] : null; // Obtener e
         <?php endif; ?>
 
 
-        <li>
+        <li class="logout">
             <img src="../assets/img/svg/logout.svg" alt="cerrar icono">
-            <a href="#" class="logout">Cerrar Sesión</a>
+            <a href="#" >Cerrar Sesión</a>
         </li>
 
         <!-- Mostrar el ítem de cambiar contraseña solo si la sesión tiene contra = true -->

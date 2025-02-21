@@ -1,11 +1,8 @@
-<div>
-    <p>Copyright 2025 - TecNM</p>
-    <a href="./aviso_privacidad.php">Aviso de privacidad</a>
-    <span>Ultima actualizacion</span>
 
-    <div  class="list-info">
+    <p>Copyright 2025 - TecNM</p>
+    <span>Ultima actualización - Enero 2025</span>
+
         <div  class="container">
-            <div class="col-sm-3"><img src="https://framework-gb.cdn.gob.mx/gobmx/img/logo_blanco.svg" href="/" alt="logo gobierno de méxico" class="logo_footer" style="max-width: 80%; margin-left: -27px; margin-top: 12px;"></div>
             <div class="col">
                 <h2 class="list_footer">Enlaces</h2>
                 <ul class="list_footer lista ">
@@ -30,8 +27,6 @@
                     <li class="list_footer"><a href="https://www.gob.mx/terminos">Términos y Condiciones </a></li>
                     <li class="list_footer"><a href="https://www.gob.mx/terminos#medidas-seguridad-informacion">Política de
                             seguridad</a></li>
-                    <li class="list_footer"><a id="Marco Juridico" href="http://www.ordenjuridico.gob.mx" target="_blank" rel="noopener" title="Enlace abre en ventana nueva" class="footer">Marco jurídico</a></li>
-                    <li class="list_footer"><a href="https://www.gob.mx/sitemap">Mapa de sitio</a></li>
                 </ul>
             </div>
             <div class="col">
@@ -41,52 +36,72 @@
                 <h2 class="list_footer">Síguenos en </h2>
                 <ul class="list-inline lista">
                     <li class="list_footer"><a id="Facebook" href="https://www.facebook.com/gobmexico" target="_blank" rel="noopener" title="enlace a facebook abre en una nueva ventana" class="sendEst share-info footer"><img alt="Facebook" src="https://framework-gb.cdn.gob.mx/landing/img/facebook.png"></a></li>
-                    <li style="margin-left: 5px; margin-right: 5px;"><a id="Twitter" href="https://twitter.com/GobiernoMX" target="_blank" rel="noopener" title="Enlace a twitter abre en una nueva ventana" class="sendEst share-info footer"><img alt="Twitter" src="https://framework-gb.cdn.gob.mx/landing/img/twitter.png"></a></li>
-                    <li style="margin-left: 5px; margin-right: 5px;"><a id="Instagram" href="https://www.instagram.com/gobmexico/" target="_blank" rel="noopener" title="Enlace a instagram abre en una nueva ventana" class="sendEst share-info footer"><img alt="Instagram" src="https://framework-gb.cdn.gob.mx/landing/img/youtube.png"></a></li>
-                    <li style="margin-left: 5px; margin-right: 5px;"><a id="Youtube" href="https://www.youtube.com/@gobiernodemexico" target="_blank" rel="noopener" title="Enlace a youtube abre en una nueva ventana" class="sendEst share-info footer"><img alt="Youtube" src="https://framework-gb.cdn.gob.mx/landing/img/instagram.png"></a></li>
+                    <li ><a id="Twitter" href="https://twitter.com/GobiernoMX" target="_blank" rel="noopener" title="Enlace a twitter abre en una nueva ventana" class="sendEst share-info footer"><img alt="Twitter" src="https://framework-gb.cdn.gob.mx/landing/img/twitter.png"></a></li>
+                    <li ><a id="Instagram" href="https://www.instagram.com/gobmexico/" target="_blank" rel="noopener" title="Enlace a instagram abre en una nueva ventana" class="sendEst share-info footer"><img alt="Instagram" src="https://framework-gb.cdn.gob.mx/landing/img/youtube.png"></a></li>
+                    <li ><a id="Youtube" href="https://www.youtube.com/@gobiernodemexico" target="_blank" rel="noopener" title="Enlace a youtube abre en una nueva ventana" class="sendEst share-info footer"><img alt="Youtube" src="https://framework-gb.cdn.gob.mx/landing/img/instagram.png"></a></li>
                 </ul>
             </div>
         </div>
-    </div>
-    <div class="container-fluid footer-pleca">
-        <div class="row">
-            <div class="col"><br class="list_footer"><br class="list_footer"></div>
-        </div>
-    </div>
-</div>
+   
 
 <style>
-    footer {
-        background-color: var(--azul_TecNM);
-        padding: 1rem 3rem;
-        display: flex;
-        justify-content: center;
-        color: var(--blanco_universal);
-        text-align: center;
-    }
+  footer {
+    background-color: var(--azul_TecNM);
+    padding: 1rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--blanco_universal);
+    text-align: center;
+}
 
-    .container{
+.container {
+    width: 100%;
+    margin-top: 1rem;
+   
+}
+
+.lista {
+    list-style: none;
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.list_footer {
+    margin-top: 1rem;
+
+}
+
+.list_footer a {
+    color: white;
+}
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 900px) {
+    footer{
+        padding: 1rem 2rem;
         width: 100%;
-        display: flex;
-        align-items: center;
-        list-style: none;
-        margin-top: 1rem;
-        gap: 1rem;
     }
-    .lista{
-        list-style: none;
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        gap: .7rem;
+    .container {
+        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+        align-items: flex-start; /* Alinea los elementos al principio */
     }
 
-    .list_footer {
-        margin-top: 1rem;
+    .col-sm-3, .col {
+        width: 100%; /* Asegura que las columnas ocupen todo el ancho */
+        text-align: center; /* Centra el contenido dentro de cada columna */
+        
     }
 
-    .list_footer a {
-        color: white;
+    .list-footer {
+        margin-top: 0.5rem;
     }
+}
+
     
 </style>

@@ -30,23 +30,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Obtener los datos del formulario
-    $nombre = isset($data['nombre']) ? $data['nombre'] : '';
-    $descripcion = isset($data['descripcion']) ? $data['descripcion'] : '';
-    $id_nivel = isset($data['id_nivel']) ? $data['id_nivel'] : '';
-    $meta = isset($data['meta']) ? $data['meta'] : '';
-    $id_coordinador = isset($data['id_coordinador']) ? $data['id_coordinador'] : ''; // Esto debe estar en los datos enviados
+    $id_nivel = isset($data['id_nivel']) ? $data['id_nivel'] : [];  // Ahora es un arreglo
+    $metas = isset($data['metas']) ? $data['metas'] : [];  // Las metas vienen como un objeto
+    $id_coordinador = isset($data['educador']) ? $data['educador'] : ''; // Usar 'educador' si ese es el campo correcto
     $inicio_periodo = isset($data['inicio_periodo']) ? $data['inicio_periodo'] : '';
     $fin_periodo = isset($data['fin_periodo']) ? $data['fin_periodo'] : '';
 
     // Validación de campos obligatorios
     $missing_fields = [];
 
-   
-    if (!$id_nivel) {
+    if (empty($id_nivel)) {
         $missing_fields[] = 'id_nivel';
     }
-    if (!$meta) {
-        $missing_fields[] = 'meta';
+    if (empty($metas)) {
+        $missing_fields[] = 'metas';
     }
 
     if (!$inicio_periodo) {
@@ -65,6 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Cambiar nombre y descripcion a cadenas con 3 espacios
+    $nombre = "   ";  // 3 espacios
+    $descripcion = "   ";  // 3 espacios
+
+
     // Obtener la conexión a la base de datos
     $conn = Database::getConnection();
 
@@ -72,13 +74,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn->begin_transaction();
 
     try {
-        // Insertar los datos en la tabla 'programas'
+        // Preparar la consulta para insertar los programas
         $query_programa = "INSERT INTO programas (nombre, descripcion, id_tecnologico, id_nivel, meta, id_coordinador, inicio_periodo, fin_periodo)
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt_programa = $conn->prepare($query_programa);
-        $stmt_programa->bind_param('ssiiisss', $nombre, $descripcion, $id_tecnologico, $id_nivel, $meta, $id_coordinador, $inicio_periodo, $fin_periodo);
-        $stmt_programa->execute();
+
+        // Iterar sobre los niveles recibidos
+        foreach ($id_nivel as $nivelId) {
+            // Recuperar la meta asociada a este nivel
+            $meta = isset($metas[$nivelId]) ? $metas[$nivelId] : '';
+
+            // Si hay una meta para este nivel, realizar la inserción
+            if ($meta) {
+                // Aquí realizamos la inserción por cada nivel
+                $stmt_programa->bind_param('ssiiisss', $nombre, $descripcion, $id_tecnologico, $nivelId, $meta, $id_coordinador, $inicio_periodo, $fin_periodo);
+                $stmt_programa->execute();
+            }
+        }
 
         // Confirmar la transacción
         $conn->commit();
@@ -86,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Respuesta exitosa
         echo json_encode([
             'success' => true,
-            'message' => 'Programa registrado correctamente.'
+            'message' => 'Programa(s) registrado(s) correctamente.'
         ]);
     } catch (Exception $e) {
         // En caso de error, revertir la transacción

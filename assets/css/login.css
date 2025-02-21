@@ -8,7 +8,6 @@ header {
 header img {
   width: 10%;
   max-height: 50px;
-  border-right: 2px solid var(--vino_sep);
   padding-right: 2rem;
 }
 

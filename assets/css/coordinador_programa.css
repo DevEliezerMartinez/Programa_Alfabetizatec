@@ -5,6 +5,9 @@
   text-align: center;
   width: 100%;
 }
+h5{
+  margin: 1rem 0rem;
+}
 
 /* ======== Estilos para el contenedor principal ======== */
 
@@ -40,7 +43,6 @@ main {
   border: 1px solid #888; /* Borde gris */
   width: 90%; /* Ocupa el 90% del ancho disponible */
   max-width: 500px; /* Ancho máximo del contenido */
-  max-height: 90vh; /* Altura máxima para evitar desbordamiento */
   overflow-y: auto; /* Scroll vertical si es necesario */
   box-sizing: border-box; /* Incluye padding y borde en el tamaño total */
 }
@@ -72,8 +74,6 @@ main {
   justify-content: center; /* Centra verticalmente */
   gap: 0.6rem; /* Espaciado entre elementos */
   padding: 1.8rem 0; /* Espaciado interno */
-  max-height: 88vh; /* Limita la altura máxima */
-  margin-top: 2rem; /* Margen superior adicional */
 }
 
 /* Estilos para los grupos de entrada dentro del formulario */
@@ -133,7 +133,6 @@ main {
   justify-content: center; /* Centra verticalmente */
   gap: 0.6rem; /* Espaciado entre elementos */
   padding: 1.8rem 0; /* Espaciado interno */
-  max-height: 88vh; /* Limita la altura máxima */
 }
 
 @media (max-width: 768px) {
@@ -153,6 +152,7 @@ main {
   justify-content: center;
   flex-direction: column;
   overflow-y: scroll;
+  overflow-x: scroll;
 }
 
 .info {
@@ -181,4 +181,70 @@ main {
   margin: 1rem;
   left: 70%;
   top: 22%;
+}
+
+
+/* Estilo básico del contenedor de la sección */
+.datos_tec {
+  font-family: Arial, sans-serif;
+  padding: 4rem 1rem;
+}
+
+/* Estilo del icono de ayuda */
+.tooltip-icon {
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  padding: 5px;
+  cursor: pointer;
+  margin-left: 8px;
+  font-size: 16px;
+  display: inline-block;
+  text-align: center;
+  line-height: 1;
+  position: relative;
+  width: 25px;
+  height: 25px;
+}
+
+/* Estilo del tooltip */
+.tooltip-icon::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  width: 200px; /* Ajusta el tamaño del tooltip */
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+/* Mostrar el tooltip cuando el usuario pasa el mouse */
+.tooltip-icon:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Estilo de las secciones de información */
+.info {
+  margin-bottom: 20px;
+}
+
+.info h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Estilo de las notas */
+.nota {
+  font-size: 12px;
+  color: #777;
 }

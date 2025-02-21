@@ -9,16 +9,22 @@
     <link rel="stylesheet" href="../assets/css/vista_estado.css">
     <link rel="stylesheet" href="../assets/css/layout/header.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
 </head>
 
 <body>
+    <?php
+    // <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
+    session_start();
+    include('./api/auth/validate.php');
+    ?>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <header>
         <?php include('./layout/header.php') ?>
     </header>
 
     <main>
-    <ul class="breadcrumb">
+        <ul class="breadcrumb">
             <li><a href="./coordinador_nacional.php">Inicio</a></li>
             <li><a href="#">Detalles por estado:</a></li>
 

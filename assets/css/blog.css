@@ -1,0 +1,63 @@
+/* Menú */
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-bottom: 2px solid #ddd;
+}
+
+.menu_actions {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+/* Sección principal */
+.nota_principal {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 3rem 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: justify;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.nota_principal h1 {
+  font-size: 1.8rem;
+  color: #004a99;
+  text-align: center;
+  margin: 1.4rem;
+}
+
+.nota_principal img {
+  max-width: 80%;
+  margin: 1rem auto;
+  border-radius: 8px;
+  max-height: 300px;
+  object-fit: cover;
+  width: 100%;
+  display: block;
+}
+
+.nota_principal p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Diseño responsive */
+@media (max-width: 768px) {
+  .nota_principal {
+    padding: 1.5rem;
+  }
+
+  .nota_principal img {
+    max-width: 80%;
+  }
+}

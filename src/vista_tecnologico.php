@@ -1,6 +1,4 @@
-<?php
-session_start();
-?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,9 +10,15 @@ session_start();
     <link rel="stylesheet" href="../assets/css/vista_tecnologico.css">
     <link rel="stylesheet" href="../assets/css/layout/header.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
 </head>
 
 <body>
+    <?php
+    // <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
+    session_start();
+    include('./api/auth/validate.php');
+    ?>
     <header>
         <?php include('./layout/header.php') ?>
     </header>
@@ -22,7 +26,7 @@ session_start();
     <main>
         <ul class="breadcrumb">
             <?php if ($_SESSION['rol_id'] === 2): ?>
-                <li><a href="./coordinador_nacional.php">Inicio</a></li>
+                <li><a href="./vista_region.php?region=<?php echo urlencode($_SESSION['nombre_region']); ?>">Inicio</a></li>
                 <li><a href="./vista_region.php?region=<?php echo urlencode($_SESSION['nombre_region']); ?>">Región</a></li>
                 <li><a href="#">Detalles por tecnológico:</a></li>
             <?php else: ?>
@@ -61,28 +65,27 @@ session_start();
                             // Mostrar el nombre del tecnológico en el título
                             $('#titulo-tecnologico').text(`Tecnológico: ${data.data.tecnologico_nombre}`);
 
-                            // Crear la tabla de programas
-                            if (data.data.programas && data.data.programas.length > 0) {
+                            // Crear la tabla de niveles con la cantidad de programas y la suma de metas
+                            if (data.data.niveles && data.data.niveles.length > 0) {
                                 let tableContent = `
-                                <table id="programasTable" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Programa</th>
-                                            <th>Descripción</th>
-                                            <th>Inicio Periodo</th>
-                                            <th>Fin Periodo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                            `;
+            <table id="nivelesTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Cantidad de Programas</th>
+                        <th>Suma de Metas</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
 
-                                // Agregar los programas a la tabla
-                                data.data.programas.forEach(function(programa) {
+                                // Agregar los niveles a la tabla
+                                data.data.niveles.forEach(function(nivel) {
                                     tableContent += '<tr>' +
-                                        `<td><a href="./vista_programa.php?id=${programa.id}" >${programa.nivel}</a></td>` +
-                                        '<td>' + (programa.descripcion || "N/A") + '</td>' +
-                                        '<td>' + programa.inicio_periodo + '</td>' +
-                                        '<td>' + programa.fin_periodo + '</td>' +
+                                        // Convertir el nombre del nivel en un enlace
+                                        `<td><a href="./vista_programa.php?nombre=${encodeURIComponent(nivel.nivel)}&id_tecnologico=${encodeURIComponent(idTecnologico)}">${nivel.nivel}</a></td>` +
+                                        `<td>${nivel.cantidad_programas}</td>` +
+                                        `<td>${nivel.suma_metas}</td>` +
                                         '</tr>';
                                 });
 
@@ -90,7 +93,7 @@ session_start();
                                 $('#detallesTecnologico').append(tableContent);
 
                                 // Inicializar DataTable sobre la tabla generada
-                                $('#programasTable').DataTable({
+                                $('#nivelesTable').DataTable({
                                     paging: true,
                                     searching: true,
                                     ordering: true,
@@ -111,7 +114,7 @@ session_start();
                                     }
                                 });
                             } else {
-                                $('#detallesTecnologico').append('<p>No hay programas disponibles para este tecnológico.</p>');
+                                $('#detallesTecnologico').append('<p>No hay niveles disponibles para este tecnológico.</p>');
                             }
 
                         } else {

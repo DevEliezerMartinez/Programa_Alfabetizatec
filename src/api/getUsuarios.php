@@ -1,6 +1,12 @@
 <?php
 header('Content-Type: application/json');
 
+// Depuración: verificar el contenido de la sesión
+session_start();
+
+$region_id = isset($_SESSION['id_region']) ? $_SESSION['id_region'] : 0;  // O de la fuente que utilices
+
+
 // Incluir archivo de configuración de la base de datos
 include '../config/conexionDB.php';
 
@@ -15,7 +21,9 @@ $response = [
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // Obtener el tipo de consulta (regional o programa) y validar
     $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : '';
-    
+
+    // Depuración: verificar el tipo de consulta
+
     if ($tipo === 'regional') {
         // Si es tipo regional, continuar con el flujo normal para coordinadores regionales
         $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
@@ -42,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $response['recordsTotal'] = $countRow['total'];
         $response['recordsFiltered'] = $response['recordsTotal'];  // Por defecto, sin filtros adicionales
 
+        // Depuración: verificar el resultado de la consulta de conteo
+
         // Consulta SQL para obtener todos los coordinadores regionales y los detalles de la tabla usuarios (correo, telefono)
         $sql = "SELECT cr.id, cr.id_usuario, u.nombre, u.apellido, u.correo, u.telefono, r.nombre AS region
                 FROM coordinadores_regionales cr
@@ -67,6 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ];
         }
 
+        // Depuración: mostrar el contenido de los coordinadores obtenidos
+
         if (!empty($coordinadores)) {
             $response['status'] = true;
             $response['message'] = 'Consulta exitosa';
@@ -80,7 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         echo json_encode($response);
         exit;
-
     } elseif ($tipo === 'programa') {
         // Si es tipo programa, obtener los coordinadores de la tabla coordinadores_programa
         $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
@@ -107,15 +118,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $response['recordsTotal'] = $countRow['total'];
         $response['recordsFiltered'] = $response['recordsTotal'];  // Por defecto, sin filtros adicionales
 
-        // Consulta SQL para obtener todos los coordinadores de programa y los detalles de la tabla usuarios (correo, telefono)
+        // Depuración: verificar el resultado del conteo
+
+        // Obtener la región de la sesión o parámetro (suponiendo que se encuentra en $_SESSION o en GET)
+        $region_id = isset($_SESSION['id_region']) ? intval($_SESSION['id_region']) : 0;  // Asegúrate de que el ID de la región esté en la sesión
+
+        // Depuración: verificar el valor de region_id
+
         $sql = "SELECT cp.id, cp.id_usuario, u.nombre, u.apellido, u.correo, u.telefono, t.nombre AS tecnologico
-                FROM coordinadores_programa cp
-                INNER JOIN usuarios u ON cp.id_usuario = u.id
-                INNER JOIN tecnologicos t ON cp.id_tecnologico = t.id
-                LIMIT ?, ?";
+        FROM coordinadores_programa cp
+        INNER JOIN usuarios u ON cp.id_usuario = u.id
+        INNER JOIN tecnologicos t ON cp.id_tecnologico = t.id
+        INNER JOIN estados e ON t.estado_id = e.id
+        WHERE e.id_region = ?
+        ";
 
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ii', $start, $length);  // Pagina los resultados
+        $stmt->bind_param('i', $region_id);  // Filtramos por región y aplicamos paginación
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -132,6 +151,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ];
         }
 
+        // Depuración: mostrar el contenido de los coordinadores obtenidos
+
         if (!empty($coordinadores)) {
             $response['status'] = true;
             $response['message'] = 'Consulta exitosa';
@@ -145,7 +166,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         echo json_encode($response);
         exit;
-
     } else {
         $response['message'] = 'Tipo no válido. Debe ser "regional" o "programa"';
         echo json_encode($response);

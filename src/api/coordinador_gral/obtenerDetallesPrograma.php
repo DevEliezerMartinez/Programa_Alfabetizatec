@@ -23,27 +23,36 @@ try {
         exit();
     }
 
-    // Consulta para obtener los detalles del programa por su id
+    // Consulta para obtener los detalles del programa por su id y el nombre del coordinador
     $queryPrograma = "
-        SELECT p.id, p.nombre, p.descripcion, p.inicio_periodo, p.fin_periodo, p.id_nivel
+        SELECT p.id, 
+               p.nombre, 
+               p.descripcion, 
+               p.inicio_periodo, 
+               p.fin_periodo, 
+               p.id_nivel, 
+               cp.id_usuario AS id_coordinador, 
+               u.nombre AS nombre_coordinador, 
+               u.apellido AS apellido_coordinador
         FROM programas p
+        LEFT JOIN educadores cp ON p.id_coordinador = cp.id
+        LEFT JOIN usuarios u ON cp.id_usuario = u.id
         WHERE p.id = ?
     ";
 
     $stmtPrograma = $conn->prepare($queryPrograma);
-    $stmtPrograma->bind_param("i", $programaId); // Bindeamos el id del programa
+    $stmtPrograma->bind_param("i", $programaId);
     $stmtPrograma->execute();
     $resultPrograma = $stmtPrograma->get_result();
 
-    // Verificar si se obtuvo el resultado
     if ($resultPrograma->num_rows > 0) {
-        $programa = $resultPrograma->fetch_assoc(); // Obtener los detalles del programa
+        $programa = $resultPrograma->fetch_assoc();
 
         // Obtener el nombre del nivel asociado al programa
         $nivelId = $programa['id_nivel'];
         $queryNivel = "SELECT nombre FROM niveles WHERE id = ?";
         $stmtNivel = $conn->prepare($queryNivel);
-        $stmtNivel->bind_param("i", $nivelId); // Bindeamos el id del nivel
+        $stmtNivel->bind_param("i", $nivelId);
         $stmtNivel->execute();
         $resultNivel = $stmtNivel->get_result();
 
@@ -52,29 +61,35 @@ try {
             $nivel = $resultNivel->fetch_assoc();
             $nivelNombre = $nivel['nombre'];
         }
-
-        // Agregar el nombre del nivel al programa
         $programa['nivel'] = $nivelNombre;
 
         // Consulta para obtener la lista de estudiantes asociados al programa
         $queryEstudiantes = "
-SELECT e.id, e.nombre, e.apellidos, e.domicilio, e.curp, e.telefono, e.correo, s.status
-FROM estudiantes e
-JOIN solicitudes s ON e.id = s.id_estudiante
-WHERE s.id_programa = ?
-";
+            SELECT e.id, 
+                   e.nombre, 
+                   CONCAT(e.apellidos) AS apellidos, 
+                    CONCAT(e.segundo_apellido) AS apellido_materno, 
+                   e.vialidad_tipo, 
+                   e.vialidad_nombre, 
+                   e.num_exterior, 
+                   e.curp, 
+                   e.telefono, 
+                   e.correo , 
+                   s.status
+            FROM estudiantes e
+            JOIN solicitudes s ON e.id = s.id_estudiante
+            WHERE s.id_programa = ?
+        ";
 
         $stmtEstudiantes = $conn->prepare($queryEstudiantes);
-        $stmtEstudiantes->bind_param("i", $programaId); // Bindeamos el id del programa
+        $stmtEstudiantes->bind_param("i", $programaId);
         $stmtEstudiantes->execute();
         $resultEstudiantes = $stmtEstudiantes->get_result();
 
         $estudiantes = [];
         while ($estudiante = $resultEstudiantes->fetch_assoc()) {
-            $estudiantes[] = $estudiante; // Almacenamos cada estudiante en un array
+            $estudiantes[] = $estudiante;
         }
-
-        // Agregar la lista de estudiantes al programa
         $programa['estudiantes'] = $estudiantes;
 
         // Consulta para obtener todas las solicitudes asociadas al programa
@@ -85,16 +100,14 @@ WHERE s.id_programa = ?
         ";
 
         $stmtSolicitudes = $conn->prepare($querySolicitudes);
-        $stmtSolicitudes->bind_param("i", $programaId); // Bindeamos el id del programa
+        $stmtSolicitudes->bind_param("i", $programaId);
         $stmtSolicitudes->execute();
         $resultSolicitudes = $stmtSolicitudes->get_result();
 
         $solicitudes = [];
         while ($solicitud = $resultSolicitudes->fetch_assoc()) {
-            $solicitudes[] = $solicitud; // Almacenamos cada solicitud en un array
+            $solicitudes[] = $solicitud;
         }
-
-        // Agregar la lista de solicitudes al programa
         $programa['solicitudes'] = $solicitudes;
 
         // Enviar la respuesta JSON con los detalles del programa, estudiantes y solicitudes
@@ -103,14 +116,12 @@ WHERE s.id_programa = ?
             'data' => $programa
         ]);
     } else {
-        // Si no se encuentra el programa
         echo json_encode([
             'success' => false,
             'message' => 'No se encontró el programa solicitado.'
         ]);
     }
 } catch (Exception $e) {
-    // Manejo de errores
     echo json_encode([
         'success' => false,
         'message' => 'Hubo un error al procesar la solicitud.',

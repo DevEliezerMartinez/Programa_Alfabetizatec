@@ -38,7 +38,7 @@ try {
 
     // Consulta para obtener los detalles de los tecnológicos por estado
     $queryTecnologicosPorEstado = "
-        SELECT t.id AS tecnologico_id, t.nombre AS tecnologico_nombre, e.id AS estado_id, director,tipo_de_institucion
+        SELECT t.id AS tecnologico_id, t.nombre AS tecnologico_nombre, e.id AS estado_id, director,modalidad
         FROM tecnologicos t
         LEFT JOIN estados e ON t.estado_id = e.id
         LEFT JOIN regiones r ON e.id_region = r.id
@@ -62,7 +62,7 @@ try {
             $tecnologicosPorEstado[$row['estado_id']][] = [
                 'tecnologico_id' => $row['tecnologico_id'],
                 'tecnologico_nombre' => $row['tecnologico_nombre'],
-                'tipo_de_institucion' => $row['tipo_de_institucion'],
+                'tipo_de_institucion' => $row['modalidad'],
                 'director' => $row['director'],
             ];
         }

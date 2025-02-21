@@ -26,7 +26,7 @@ try {
     // Consulta para obtener los detalles de un tecnológico por su id
     $queryTecnologico = "
         SELECT t.id AS tecnologico_id, t.nombre AS tecnologico_nombre, e.id AS estado_id, e.nombre AS estado_nombre,
-               t.director, t.tipo_de_institucion, t.modalidad
+               t.director, t.modalidad
         FROM tecnologicos t
         LEFT JOIN estados e ON t.estado_id = e.id
         WHERE t.id = ?
@@ -41,48 +41,33 @@ try {
     if ($resultTecnologico->num_rows > 0) {
         $data = $resultTecnologico->fetch_assoc(); // Obtener los datos del tecnológico
 
-        // Obtener los programas asociados al tecnológico
-        $queryProgramas = "
-            SELECT p.id, p.nombre, p.descripcion, p.inicio_periodo, p.fin_periodo, p.id_nivel
+        // Consulta para obtener el nombre de los niveles, la cantidad de programas por grupo y la suma de metas
+        $queryNiveles = "
+            SELECT n.nombre AS nivel_nombre, COUNT(p.id) AS cantidad_programas, SUM(p.meta) AS suma_metas
             FROM programas p
+            INNER JOIN niveles n ON p.id_nivel = n.id
             WHERE p.id_tecnologico = ?
+            GROUP BY n.nombre
         ";
 
-        $stmtProgramas = $conn->prepare($queryProgramas);
-        $stmtProgramas->bind_param("i", $tecnologicoId); // Bindeamos el id del tecnológico
-        $stmtProgramas->execute();
-        $resultProgramas = $stmtProgramas->get_result();
+        $stmtNiveles = $conn->prepare($queryNiveles);
+        $stmtNiveles->bind_param("i", $tecnologicoId); // Bindeamos el id del tecnológico
+        $stmtNiveles->execute();
+        $resultNiveles = $stmtNiveles->get_result();
 
-        // Almacenar los programas en un array
-        $programas = [];
-        while ($programa = $resultProgramas->fetch_assoc()) {
-            // Obtener el nombre del nivel
-            $nivelId = $programa['id_nivel'];
-            $queryNivel = "SELECT nombre FROM niveles WHERE id = ?";
-            $stmtNivel = $conn->prepare($queryNivel);
-            $stmtNivel->bind_param("i", $nivelId); // Bindeamos el id del nivel
-            $stmtNivel->execute();
-            $resultNivel = $stmtNivel->get_result();
-
-            $nivelNombre = '';
-            if ($resultNivel->num_rows > 0) {
-                $nivel = $resultNivel->fetch_assoc();
-                $nivelNombre = $nivel['nombre'];
-            }
-
-            // Aquí agregamos el nombre del nivel al array de cada programa
-            $programas[] = [
-                'id' => $programa['id'],
-                'nombre' => $programa['nombre'],
-                'descripcion' => $programa['descripcion'],
-                'inicio_periodo' => $programa['inicio_periodo'],
-                'fin_periodo' => $programa['fin_periodo'],
-                'nivel' => $nivelNombre, // Nombre del nivel
+        // Almacenar los niveles en un array
+        $niveles = [];
+        while ($nivel = $resultNiveles->fetch_assoc()) {
+            // Agregar el nivel con la cantidad de programas y la suma de metas
+            $niveles[] = [
+                'nivel' => $nivel['nivel_nombre'],
+                'cantidad_programas' => (int)$nivel['cantidad_programas'],
+                'suma_metas' => (float)$nivel['suma_metas'],
             ];
         }
 
-        // Agregar los programas a la respuesta
-        $data['programas'] = $programas;
+        // Agregar los niveles a la respuesta
+        $data['niveles'] = $niveles;
 
         // Enviar la respuesta JSON con los datos
         echo json_encode([

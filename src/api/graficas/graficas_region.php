@@ -25,19 +25,19 @@ try {
 
     // Consulta para obtener los tecnológicos y la cantidad total de estudiantes y educadores por tecnológico en la región
     $queryTecnologicosConEstudiantesYEducadores = "
-      SELECT 
-    t.id AS tecnologico_id, 
+SELECT
+    t.id AS tecnologico_id,
     t.nombre AS tecnologico_nombre,
-    COUNT(s.id_estudiante) AS total_estudiantes,
-    COUNT(DISTINCT e.id) AS total_educadores  -- Asegúrate de contar educadores únicos
+    COUNT(DISTINCT s.id_estudiante) AS total_estudiantes,
+    COUNT(DISTINCT e.id) AS total_educadores
 FROM tecnologicos t
 LEFT JOIN programas p ON t.id = p.id_tecnologico
 LEFT JOIN solicitudes s ON p.id = s.id_programa
 LEFT JOIN estados e2 ON t.estado_id = e2.id
 LEFT JOIN regiones r ON e2.id_region = r.id
-LEFT JOIN educadores e ON t.id = e.id_tecnologico  -- Relación con educadores
-WHERE r.nombre = ?  -- Filtrar por el nombre de la región
-GROUP BY t.id
+LEFT JOIN educadores e ON t.id = e.id_tecnologico
+WHERE r.nombre = ?
+GROUP BY t.id;
 
     ";
 

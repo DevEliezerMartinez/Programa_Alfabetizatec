@@ -3,39 +3,64 @@ include('../../config/conexionDB.php');
 
 try {
     // Crear la conexión
-    $conn = Database::getConnection(); // Asegúrate de que esta función devuelva una conexión mysqli válida
-    
-    // Consulta SQL
-    $sql = "
-        SELECT r.id , r.nombre AS region, 
-               SUM(p.meta) AS meta_total
-        FROM regiones r
-        JOIN estados e ON r.id = e.id_region  -- Relaciona las regiones con los estados
-        JOIN tecnologicos t ON e.id = t.estado_id  -- Relaciona los estados con los tecnológicos
-        JOIN programas p ON t.id = p.id_tecnologico  -- Relaciona los tecnológicos con los programas
-        GROUP BY r.id, r.nombre;
+    $conn = Database::getConnection();
+
+    // Primera consulta: Obtener la meta total de programas por región
+    $sql1 = "
+    SELECT r.id, r.nombre AS region, SUM(p.meta) AS meta_total 
+    FROM programas p 
+    JOIN tecnologicos t ON p.id_tecnologico = t.id 
+    JOIN estados e ON t.estado_id = e.id 
+    JOIN regiones r ON e.id_region = r.id 
+    GROUP BY r.id, r.nombre 
+    ORDER BY r.nombre ASC;
     ";
 
     // Ejecutar la consulta
-    $result = $conn->query($sql);
+    $result1 = $conn->query($sql1);
 
-    // Verificar si la consulta fue exitosa
-    if (!$result) {
-        throw new Exception('Error en la consulta: ' . $conn->error);
+    if (!$result1) {
+        throw new Exception('Error en la consulta de programas: ' . $conn->error);
     }
 
-    // Obtener los resultados
     $resultResumenPorRegion = [];
-    while ($row = $result->fetch_assoc()) {
+    while ($row = $result1->fetch_assoc()) {
         $resultResumenPorRegion[] = $row;
+    }
+
+    // Segunda consulta: Obtener la cantidad de educadores por región
+    $sql2 = "
+    SELECT r.id, r.nombre AS region, COUNT(e.id) AS total_educadores 
+    FROM educadores e 
+    JOIN tecnologicos t ON e.id_tecnologico = t.id 
+    JOIN estados es ON t.estado_id = es.id 
+    JOIN regiones r ON es.id_region = r.id 
+    GROUP BY r.id, r.nombre 
+    ORDER BY r.nombre ASC;
+    ";
+
+    // Ejecutar la consulta
+    $result2 = $conn->query($sql2);
+
+    if (!$result2) {
+        throw new Exception('Error en la consulta de educadores: ' . $conn->error);
+    }
+
+    $resultEducadoresPorRegion = [];
+    while ($row = $result2->fetch_assoc()) {
+        $resultEducadoresPorRegion[] = $row;
     }
 
     // Configurar el encabezado para JSON
     header('Content-Type: application/json');
 
     // Retornar los resultados en formato JSON
-    echo json_encode($resultResumenPorRegion);
+    echo json_encode([
+        'sucess' => true,
+        'resumenPorRegion' => $resultResumenPorRegion,
+        'educadoresPorRegion' => $resultEducadoresPorRegion
+    ]);
 } catch (Exception $e) {
     // Manejo de errores
-    echo 'Error: ' . $e->getMessage();
+    echo json_encode(['sucess' => false, 'error' => $e->getMessage()]);
 }

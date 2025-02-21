@@ -53,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             FROM educadores e
             INNER JOIN usuarios u ON e.id_usuario = u.id
             WHERE e.id_tecnologico = ?
-            LIMIT ?, ?";
+            ";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('iii', $id_tecnologico, $start, $length);  // Pagina los resultados
+    $stmt->bind_param('i', $id_tecnologico);  // Pagina los resultados
     $stmt->execute();
     $result = $stmt->get_result();
 
