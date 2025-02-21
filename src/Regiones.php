@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="../assets/css/layout/header.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+   
+
 
 </head>
 
@@ -23,37 +26,68 @@
         <?php include('./layout/header.php') ?>
     </header>
     <main>
-        <ul class="breadcrumb">
-            <li><a href="./coordinador_nacional.php">Inicio</a></li>
-            <li><a href="#">Vista regiones:</a></li>
-        </ul>
+    <ul class="breadcrumb">
+        <li><a href="./coordinador_nacional.php">Inicio</a></li>
+        <li><a href="#">Vista regiones:</a></li>
+    </ul>
 
-        <h1 class="titulo_principal">Regiones alfabetizatec</h1>
-        <div class="">
-            <?php include('./components/mapa_regiones/mapa_reg.html') ?>
-        </div>
+    <h1 class="titulo_principal">Regiones alfabetizatec</h1>
+    <div class="">
+        <?php include('./components/mapa_regiones/mapa_reg.html') ?>
+    </div>
 
-        <div class="container_cards">
-            <!-- Las cards se generarán dinámicamente aquí -->
-        </div>
+    <div class="container_cards">
+        <!-- Las cards se generarán dinámicamente aquí -->
+    </div>
 
+    <style>
+        /* Centrar el botón en la pantalla */
+        .boton-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0; /* Espaciado opcional */
+        }
+
+        /* Diseño básico del botón */
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #4CAF50; /* Color de fondo */
+            color: white; /* Color del texto */
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Efecto de movimiento al poner el cursor sobre el botón */
+        button:hover {
+            transform: translateY(-5px); /* Mover hacia arriba 5px */
+            background-color: #45a049; /* Cambiar color al hacer hover */
+        }
+    </style>
+
+    <!-- Contenedor para centrar el botón -->
+    <div class="boton-container">
         <button>
             Descargar reportes
         </button>
+    </div>
 
-        <h2>Resumen de las regiones</h2>
+    <h2>Resumen de las regiones</h2>
 
-        <div class="graficas_region ">
-            <!-- Gráfico de Metas -->
-            <h3>Metas Totales</h3>
-            <canvas id="graficoMetas" width="400" height="200"></canvas>
+    <div class="graficas_region ">
+        <!-- Gráfico de Metas -->
+        <h3>Metas Totales</h3>
+        <canvas id="graficoMetas" width="400" height="200"></canvas>
 
-            <!-- Gráfico de Participantes -->
-            <h3>Participantes</h3>
-            <canvas id="graficoParticipantes" width="400" height="200"></canvas>
-        </div>
+        <!-- Gráfico de Participantes -->
+        <h3>Participantes</h3>
+        <canvas id="graficoParticipantes" width="400" height="200"></canvas>
+    </div>
+</main>
 
-    </main>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -102,56 +136,68 @@
 
 
             function generarPDF(data) {
-                console.log("empeiz")
-                // Crear una instancia de jsPDF
-                const doc = new jspdf.jsPDF();
+    console.log("empezando PDF");
 
-                // Configurar el título del PDF
-                doc.setFontSize(18);
-                doc.text("Reporte de Participantes por Tecnológico", 10, 20);
+    // Crear una instancia de jsPDF
+    const doc = new jspdf.jsPDF();
 
-                // Configurar el tamaño de la fuente para el contenido
-                doc.setFontSize(12);
+    // Configurar el título del PDF
+    doc.setFontSize(18);
+    doc.text("Reporte de Participantes por Tecnológico", 10, 20);
 
-                // Posición inicial para el contenido
-                let y = 30;
+    // Configurar el tamaño de la fuente para el contenido
+    doc.setFontSize(12);
 
-                // Recorrer los datos de participantes por tecnológico
-                data.participantes_por_tecnologico.forEach((item, index) => {
-                    const text = `${item.tecnologico} - ${item.tipo_participante}: ${item.total}`;
-                    doc.text(text, 10, y);
-                    y += 10; // Aumentar la posición en Y para el siguiente elemento
+    // Agregar tabla de Participantes por Tecnológico
+    // Iniciar la tabla en la página actual
+    doc.text("Participantes por Tecnológico", 10, 30);
 
-                    // Si el contenido excede la página, agregar una nueva página
-                    if (y > 280) {
-                        doc.addPage();
-                        y = 20; // Reiniciar la posición en Y
-                    }
-                });
+    // Definir los encabezados y los datos
+    const participantesHeaders = ['Tecnológico', 'Tipo de Participante', 'Total'];
+    const participantesData = data.participantes_por_tecnologico.map(item => [
+        item.tecnologico,
+        item.tipo_participante,
+        item.total
+    ]);
 
-                // Agregar una nueva sección para estudiantes por nivel
-                doc.addPage();
-                y = 20;
-                doc.setFontSize(18);
-                doc.text("Estudiantes por Nivel", 10, y);
-                y += 10;
+    // Crear la tabla con autoTable
+    doc.autoTable({
+        head: [participantesHeaders],
+        body: participantesData,
+        startY: 40,  // Iniciar tabla en una posición Y específica
+        theme: 'grid',
+        headStyles: { fillColor: [63, 81, 181] },
+        margin: { top: 10, left: 10, right: 10 },
+        tableWidth: 'auto',
+    });
 
-                doc.setFontSize(12);
-                data.estudiantes_por_tecnologico_nivel.forEach((item, index) => {
-                    const text = `${item.tecnologico} - ${item.nivel}: ${item.total_estudiantes}`;
-                    doc.text(text, 10, y);
-                    y += 10;
+    // Agregar una nueva sección para Estudiantes por Nivel
+    doc.addPage(); // Esto está bien, solo asegurate de que no haya una hoja en blanco.
+    doc.text("Estudiantes por Nivel", 10, 20);
 
-                    // Si el contenido excede la página, agregar una nueva página
-                    if (y > 280) {
-                        doc.addPage();
-                        y = 20; // Reiniciar la posición en Y
-                    }
-                });
+    // Definir los encabezados y los datos
+    const estudiantesHeaders = ['Tecnológico', 'Nivel', 'Total Estudiantes'];
+    const estudiantesData = data.estudiantes_por_tecnologico_nivel.map(item => [
+        item.tecnologico,
+        item.nivel,
+        item.total_estudiantes
+    ]);
 
-                // Guardar el PDF
-                doc.save("reporte_participantes.pdf");
-            }
+    // Crear la tabla con autoTable
+    doc.autoTable({
+        head: [estudiantesHeaders],
+        body: estudiantesData,
+        startY: 30,
+        theme: 'grid',
+        headStyles: { fillColor: [63, 81, 181] },
+        margin: { top: 10, left: 10, right: 10 },
+        tableWidth: 'auto',
+    });
+
+    // Guardar el PDF
+    doc.save("reporte_participantes.pdf");
+}
+
 
             $.ajax({
                 url: './api/graficas/metas.php', // URL del endpoint de las metas
