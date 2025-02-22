@@ -11,14 +11,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
-   
-
-
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
     <?php
-    // <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert ya importado -->
     session_start();
     include('./api/auth/validate.php');
     ?>
@@ -41,43 +38,48 @@
     </div>
 
     <style>
-        /* Centrar el botón en la pantalla */
-        .boton-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0; /* Espaciado opcional */
-        }
+    /* Centrar y colocar los botones en línea */
+    .boton-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0;
+    }
 
-        /* Diseño básico del botón */
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            background-color: #4CAF50; /* Color de fondo */
-            color: white; /* Color del texto */
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
+    /* Diseño básico del botón */
+    button {
+        padding: 15px 30px;
+        font-size: 18px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        margin: 0 10px; /* Espaciado entre botones */
+    }
 
-        /* Efecto de movimiento al poner el cursor sobre el botón */
-        button:hover {
-            transform: translateY(-5px); /* Mover hacia arriba 5px */
-            background-color: #45a049; /* Cambiar color al hacer hover */
-        }
-    </style>
+    /* Efecto de movimiento al poner el cursor sobre el botón */
+    button:hover {
+        transform: translateY(-5px);
+        background-color: #45a049;
+    }
+</style>
 
-    <!-- Contenedor para centrar el botón -->
-    <div class="boton-container">
-        <button>
-            Descargar reportes
-        </button>
-    </div>
+<!-- Contenedor para los botones en línea -->
+<div class="boton-container">
+    <button id="descargar-pdf">
+        Descargar reportes PDF
+    </button>
+    <button id="descargar-excel">
+        Descargar reportes Excel
+    </button>
+</div>
+
 
     <h2>Resumen de las regiones</h2>
 
-    <div class="graficas_region ">
+    <div class="graficas_region">
         <!-- Gráfico de Metas -->
         <h3>Metas Totales</h3>
         <canvas id="graficoMetas" width="400" height="200"></canvas>
@@ -87,7 +89,6 @@
         <canvas id="graficoParticipantes" width="400" height="200"></canvas>
     </div>
 </main>
-
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -115,8 +116,8 @@
                 }
             ];
 
-
-            $("button:contains('Descargar reportes')").on("click", function() {
+            // Descargar reporte en PDF
+            $("#descargar-pdf").on("click", function() {
                 $.ajax({
                     url: "./api/coordinador_gral/obtenerDetallesRegiones.php",
                     type: "GET",
@@ -134,78 +135,157 @@
                 });
             });
 
-
+            // Generar reporte en PDF
             function generarPDF(data) {
-    console.log("empezando PDF");
+                const doc = new jspdf.jsPDF();
 
-    // Crear una instancia de jsPDF
-    const doc = new jspdf.jsPDF();
+                doc.setFontSize(18);
+                doc.text("Reporte de Participantes por Tecnológico", 10, 20);
 
-    // Configurar el título del PDF
-    doc.setFontSize(18);
-    doc.text("Reporte de Participantes por Tecnológico", 10, 20);
+                // Tabla Participantes por Tecnológico
+                doc.setFontSize(12);
+                doc.text("Participantes por Tecnológico", 10, 30);
 
-    // Configurar el tamaño de la fuente para el contenido
-    doc.setFontSize(12);
+                const participantesHeaders = ['Tecnológico', 'Tipo de Participante', 'Total'];
+                const participantesData = data.participantes_por_tecnologico.map(item => [
+                    item.tecnologico,
+                    item.tipo_participante,
+                    item.total
+                ]);
 
-    // Agregar tabla de Participantes por Tecnológico
-    // Iniciar la tabla en la página actual
-    doc.text("Participantes por Tecnológico", 10, 30);
+                doc.autoTable({
+                    head: [participantesHeaders],
+                    body: participantesData,
+                    startY: 40,
+                    theme: 'grid',
+                    headStyles: { fillColor: [63, 81, 181] },
+                    margin: { top: 10, left: 10, right: 10 },
+                    tableWidth: 'auto',
+                });
 
-    // Definir los encabezados y los datos
-    const participantesHeaders = ['Tecnológico', 'Tipo de Participante', 'Total'];
-    const participantesData = data.participantes_por_tecnologico.map(item => [
-        item.tecnologico,
-        item.tipo_participante,
-        item.total
-    ]);
+                // Nueva página para Estudiantes por Nivel
+                doc.addPage();
+                doc.text("Estudiantes por Nivel", 10, 20);
 
-    // Crear la tabla con autoTable
-    doc.autoTable({
-        head: [participantesHeaders],
-        body: participantesData,
-        startY: 40,  // Iniciar tabla en una posición Y específica
-        theme: 'grid',
-        headStyles: { fillColor: [63, 81, 181] },
-        margin: { top: 10, left: 10, right: 10 },
-        tableWidth: 'auto',
-    });
+                const estudiantesHeaders = ['Tecnológico', 'Nivel', 'Total Estudiantes'];
+                const estudiantesData = data.estudiantes_por_tecnologico_nivel.map(item => [
+                    item.tecnologico,
+                    item.nivel,
+                    item.total_estudiantes
+                ]);
 
-    // Agregar una nueva sección para Estudiantes por Nivel
-    doc.addPage(); // Esto está bien, solo asegurate de que no haya una hoja en blanco.
-    doc.text("Estudiantes por Nivel", 10, 20);
+                doc.autoTable({
+                    head: [estudiantesHeaders],
+                    body: estudiantesData,
+                    startY: 30,
+                    theme: 'grid',
+                    headStyles: { fillColor: [63, 81, 181] },
+                    margin: { top: 10, left: 10, right: 10 },
+                    tableWidth: 'auto',
+                });
 
-    // Definir los encabezados y los datos
-    const estudiantesHeaders = ['Tecnológico', 'Nivel', 'Total Estudiantes'];
-    const estudiantesData = data.estudiantes_por_tecnologico_nivel.map(item => [
-        item.tecnologico,
-        item.nivel,
-        item.total_estudiantes
-    ]);
+                doc.save("reporte_participantes.pdf");
+            }
 
-    // Crear la tabla con autoTable
-    doc.autoTable({
-        head: [estudiantesHeaders],
-        body: estudiantesData,
-        startY: 30,
-        theme: 'grid',
-        headStyles: { fillColor: [63, 81, 181] },
-        margin: { top: 10, left: 10, right: 10 },
-        tableWidth: 'auto',
-    });
+           // Generar reporte en Excel
+function generarExcel(data) {
+    const participantesData = data.participantes_por_tecnologico.map(item => ({
+        Tecnológico: item.tecnologico,
+        "Tipo de Participante": item.tipo_participante,
+        Total: item.total
+    }));
 
-    // Guardar el PDF
-    doc.save("reporte_participantes.pdf");
+    const estudiantesData = data.estudiantes_por_tecnologico_nivel.map(item => ({
+        Tecnológico: item.tecnologico,
+        Nivel: item.nivel,
+        "Total Estudiantes": item.total_estudiantes
+    }));
+
+    const wb = XLSX.utils.book_new();
+
+    // Crear las hojas de Excel
+    const ws1 = XLSX.utils.json_to_sheet(participantesData);
+    const ws2 = XLSX.utils.json_to_sheet(estudiantesData);
+
+    // Estilo para las celdas
+    const cellStyle = {
+        alignment: {
+            horizontal: 'center', // Centrado horizontal
+            vertical: 'center'    // Centrado vertical
+        },
+        border: {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+        }
+    };
+
+    // Función para aplicar estilo a las celdas de la hoja
+    function applyStyle(ws) {
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for (let row = range.s.r; row <= range.e.r; row++) {
+            for (let col = range.s.c; col <= range.e.c; col++) {
+                const cell = ws[XLSX.utils.encode_cell({ r: row, c: col })];
+                if (cell) {
+                    cell.s = cellStyle; // Aplicar estilo
+                }
+            }
+        }
+    }
+
+    // Aplicar estilos a las hojas
+    applyStyle(ws1);
+    applyStyle(ws2);
+
+    // Ajustar el tamaño de las columnas para que se vea centrado
+    ws1['!cols'] = [
+        { wpx: 120 },  // Ancho de la primera columna
+        { wpx: 200 },  // Ancho de la segunda columna
+        { wpx: 80 }    // Ancho de la tercera columna
+    ];
+
+    ws2['!cols'] = [
+        { wpx: 120 },  // Ancho de la primera columna
+        { wpx: 200 },  // Ancho de la segunda columna
+        { wpx: 100 }   // Ancho de la tercera columna
+    ];
+
+    // Añadir las hojas al libro
+    XLSX.utils.book_append_sheet(wb, ws1, "Participantes por Tecnológico");
+    XLSX.utils.book_append_sheet(wb, ws2, "Estudiantes por Nivel");
+
+    // Generar y descargar el archivo Excel
+    XLSX.writeFile(wb, "reporte_participantes.xlsx");
 }
 
+// Descargar reporte en Excel
+$("#descargar-excel").on("click", function() {
+    $.ajax({
+        url: "./api/coordinador_gral/obtenerDetallesRegiones.php",
+        type: "GET",
+        dataType: "json",
+        success: function(response) {
+            if (response.success && response.data) {
+                generarExcel(response.data);
+            } else {
+                console.error("Error: Datos no válidos");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error en la petición:", error);
+        }
+    });
+});
 
+
+            // Obtener y mostrar gráficos
             $.ajax({
-                url: './api/graficas/metas.php', // URL del endpoint de las metas
+                url: './api/graficas/metas.php',
                 method: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    if (response) { // Verifica si la respuesta es exitosa
-                        // console.log(response)
+                    if (response) {
                         const metasData = response.resumenPorRegion;
                         const educadoresData = response.educadoresPorRegion;
 
@@ -216,17 +296,12 @@
                         regionesPredefinidas.forEach(region => {
                             regiones.push(region.nombre);
 
-                            // Buscar la meta en los datos recibidos
                             const metaRegion = metasData.find(meta => meta.region === region.nombre);
                             metas.push(metaRegion ? parseInt(metaRegion.meta_total) || 0 : 0);
 
-                            // Buscar los educadores en los datos recibidos
                             const educadoresRegion = educadoresData.find(edu => edu.region === region.nombre);
                             educadores.push(educadoresRegion ? parseInt(educadoresRegion.total_educadores) || 0 : 0);
                         });
-
-                        //console.log('Metas:', metas);
-                        //console.log('Educadores:', educadores);
 
                         const ctxMetas = document.getElementById('graficoMetas').getContext('2d');
                         new Chart(ctxMetas, {
@@ -273,7 +348,6 @@
                                 }
                             }
                         });
-
                     } else {
                         console.error('Formato de datos incorrecto:', response);
                         alert('No se encontraron datos de metas.');
@@ -286,10 +360,6 @@
             });
         });
     </script>
-
-
-
-
 
     <script src="../assets/js/jquery.js"></script>
 
