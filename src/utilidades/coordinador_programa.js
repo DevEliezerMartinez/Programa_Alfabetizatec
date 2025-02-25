@@ -86,7 +86,7 @@ $(document).ready(function () {
       // **Encabezado**
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.text("TecNM-San Marcos    Registro de Educador", 10, 15);
+      doc.text("Tecnologico Nacional de Mexico   Registro", 10, 15);
       doc.setFontSize(12);
       doc.text("Fecha: " + new Date().toLocaleDateString(), 140, 15);
 
@@ -232,7 +232,7 @@ function enviarFormularioEstudiante() {
     // **Encabezado**
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
-    doc.text("TecNM-San Marcos    Registro de Estudiante", 10, 15);
+    doc.text("Tecnologico nacional de Mexico    Registro ", 10, 15);
     doc.setFontSize(12);
     doc.text("Fecha: " + new Date().toLocaleDateString(), 140, 15);
 
